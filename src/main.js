@@ -12,6 +12,8 @@ const output = document.getElementById("output");
 
 let emailExists = null;
 
+const backendUrl = import.meta.env.VITE_API_URL;
+
 // -------------------------
 // EMAIL INPUT
 // -------------------------
@@ -42,7 +44,7 @@ validateBtn.addEventListener("click", async () => {
 
   try {
 
-    const res = await fetch("http://localhost:3000/validate-user", {
+    const res = await fetch(`${backendUrl}/validate-user`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -143,7 +145,7 @@ async function upload(e) {
 
   try {
 
-    const res = await fetch("http://localhost:3000/import", {
+    const res = await fetch(`${backendUrl}/import`, {
       method: "POST",
       body: formData
     });
