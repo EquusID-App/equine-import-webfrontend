@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="es">
+
+    <head>
+
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <title>EquusID – Importador de Equinos</title>
+
+        <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <link rel="shortcut icon" href="/favicon.ico" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+        <link rel="manifest" href="/site.webmanifest" />
+
+        <style>
+
+            body{
+                margin:0;
+                padding:0;
+                font-family:Arial, Helvetica, sans-serif;
+                background:#7d5b47;
+            }
+
+            .file-input{
+                display: flex;
+                flex-direction: column;
+                margin-top:25px;
+                margin-bottom:25px;
+                gap: 25px;
+            }
+
+            input[type="email"]{
+                width: calc(100% - 20px);
+                background:#ffffff;
+                padding:10px;
+                border-radius:8px;
+                border:none;
+            }
+
+            input[type="file"]{
+                background:#ffffff;
+                padding:10px;
+                border-radius:8px;
+                border:none;
+            }
+
+            button[type="submit"]{
+                display:inline-block;
+                padding:14px 26px;
+                font-size:14px;
+                font-weight:bold;
+                color:#7d5b47;
+                background:#ffffff;
+                border:none;
+                border-radius:10px;
+                cursor:pointer;
+            }
+
+            button[type="submit"]:hover{
+                opacity:0.9;
+            }
+
+            button[type="button"]{
+                padding: 10px;
+                display:inline-block;
+                font-size:14px;
+                font-weight:bold;
+                color:#7d5b47;
+                background:#ffffff;
+                border:none;
+                border-radius:10px;
+                cursor:pointer;
+            }
+
+            button[type="button"]:hover{
+                opacity:0.9;
+            }
+            
+            #output{
+                margin: 25px 0;
+                text-align:left;
+                background:#52392a;
+                padding:20px;
+                border-radius:10px;
+                font-size:12px;
+                white-space:pre-wrap;
+                color:#ffffff;
+                position: relative;
+            }
+
+            #output::after{
+                content: "Respuesta del sistema:";
+                padding: 4px 8px;
+                background: #52392a;
+                border-radius: 20px;
+                color:rgba(255,255,255,0.7);
+                position: absolute;
+                top: -8px;
+                left: 10px;
+            }
+
+            .custom-file-label{
+                display:flex;
+                flex-direction: column;
+                align-items:center;
+                gap:5px;
+                padding:10px 15px;
+                border:2px dashed rgba(255,255,255,0.5);
+                border-radius:8px;
+                cursor:pointer;
+                transition:border-color 0.3s;
+                background:rgba(255,255,255,0.1);
+                position: relative;
+            }
+
+            .custom-file-label p {
+                padding: 0;
+                margin: 0;
+                font-size: 12px;
+                color: rgba(255,255,255,0.7);
+            }
+
+            .custom-file-label:hover{
+                border-color:#ffffff;
+            }
+
+            .email-validation-label{
+                display:flex;
+                flex-direction: row;
+                justify-content: space-evenly;
+                align-items: center;
+                gap:5px;
+                position: relative;
+            }
+
+            .file-real-input{
+                display:none;
+            }
+
+            .file-name{
+                flex:1;
+                text-align:left;
+                font-size:13px;
+                color:#ffffff;
+            }
+
+            /* check indicador */
+
+            .custom-file-label::before {
+                content: "✓";
+                color: #00e676;
+                font-weight: bold;
+                display: none;
+                position: absolute;
+                top: 50%;
+                right: 5px;
+                font-size: 28px;
+                transform: translateY(-50%);
+            }
+
+            .custom-file-label.has-file::before{
+                display:inline;
+            }
+
+            .email-validation-label::before {
+                content: "✓";
+                color: #00e676;
+                font-weight: bold;
+                display: none;
+                position: absolute;
+                top: 50%;
+                right: -26px;
+                font-size: 28px;
+                transform: translateY(-50%);
+            }
+
+            .email-validation-label.has-file::before{
+                display:inline;
+            }
+            /* botón disabled */
+
+            button[type="submit"]:disabled,
+            button[type="button"]:disabled{
+                opacity:0.4;
+                cursor:not-allowed;
+            }
+
+        </style>
+
+    </head>
+
+    <body>
+
+        <!-- HEADER BLANCO -->
+
+        <table width="100%" cellpadding="0" cellspacing="0" bgcolor="#ffffff">
+            <tr>
+                <td align="center" style="padding:20px 0;">
+
+                    <table cellpadding="0" cellspacing="0">
+                        <tr>
+
+                            <td style="padding-right:20px;">
+                                <img src="/140x145.png" width="100">
+                            </td>
+
+                            <td>
+                                <img src="/140x62.png" width="160">
+                            </td>
+
+                        </tr>
+                    </table>
+
+                </td>
+            </tr>
+        </table>
+
+            <!-- CONTENIDO -->
+
+        <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#7d5b47;">
+            <tr>
+                <td align="center">
+
+                    <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;">
+                        <tr>
+
+                            <td style="padding:40px 0px;text-align:center;color:rgba(255,255,255,0.9);">
+
+                                <h1 style="font-size:22px;margin:0px;font-weight:bold;">
+                                Importar equinos
+                                </h1>
+
+                                <p style="font-size:14px;line-height:20px;margin:0px;color:rgba(255,255,255,0.7);">
+                                Subí una planilla o archivo con los equinos para procesarlo en el sistema.
+                                </p>
+
+                                <form id="uploadForm">
+
+                                    <div class="file-input">
+                                        <label for="usermail" class="email-validation-label"> Mail:
+                                            <input type="email" name="usermail" id="usermail" placeholder="Ingrese email para validar">
+                                            <button type="button" id="validateBtn" disabled>
+                                            Validar
+                                            </button>
+                                        </label>
+                                        <label for="file" class="custom-file-label">
+                                            <span class="file-name">
+                                                Ningún archivo seleccionado
+                                            </span>
+                                            <p>Haz click aquí e inserta un archivo (xlsx, pdf, csv, jpg, png)</p>
+                                            <input type="file" id="file" name="file" class="file-real-input" accept=".xlsx,.xls,.csv,.pdf,.jpg,.png">
+                                        </label>
+                                    </div>
+
+                                    <button type="submit" id="importButton" disabled>
+                                    Importar archivo
+                                    </button>
+
+                                </form>
+
+                                <pre id="output"></pre>
+
+                                <hr style="border:none;border-top:1px solid rgba(255,255,255,0.2);margin:10px;">
+
+                                <p style="font-size:12px;margin:0px;color:rgba(255,255,255,0.6);">
+                                    © JSDevelopment – Equine Import Service
+                                </p>
+
+                            </td>
+
+                        </tr>
+                    </table>
+
+                </td>
+            </tr>
+        </table>
+
+        <script type="module" src="/src/main.js"></script>
+
+    </body>
+
+</html>
