@@ -152,6 +152,8 @@ async function upload(e) {
 
     const data = await res.json();
 
+    console.log('upload | fetch - data: ', data);
+
     const { success, result, validation } = data;
 
     if (!success) {
