@@ -10,6 +10,8 @@ const importButton = document.getElementById("importButton");
 const form = document.getElementById("uploadForm");
 const output = document.getElementById("output");
 
+const spinner = document.getElementById("spinner-container");
+
 let emailExists = null;
 
 const backendUrl = import.meta.env.VITE_API_URL;
@@ -141,6 +143,8 @@ async function upload(e) {
   formData.append("file", file);
   formData.append("email", email);
 
+  // 👉 Estado loading ON
+  spinner.classList.remove("hidden");
   output.textContent = "Procesando archivo...";
 
   try {
@@ -187,6 +191,9 @@ async function upload(e) {
     console.error(err);
     output.textContent = "Error procesando archivo";
 
+  } finally {
+    // 👉 Estado loading OFF (SIEMPRE)
+    spinner.classList.add("hidden");
   }
 
 }

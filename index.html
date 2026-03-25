@@ -26,6 +26,51 @@
                 background:#7d5b47;
             }
 
+            /* ------SPINNER------- */
+            .spinner-container {
+                width: 100%;
+                height: 100%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                background: rgba(0,0,0, .25);
+                position: absolute;
+                top: 0;
+                left: 0;
+            }
+
+            .inner-container {
+                width: 200px;
+                height: 200px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                border-radius: 12px;
+                background: rgba(0,0,0, .25);
+                backdrop-filter: blur(1px);
+            }
+
+            .spinner {
+                width: 40px;
+                height: 40px;
+                border: 4px solid #ccc;
+                border-top: 4px solid #333;
+                padding: 25px;
+                border-radius: 50%;
+                animation: spin 1s linear infinite;
+                margin: 10px auto;
+            }
+
+            .hidden {
+                display: none;
+            }
+
+            @keyframes spin {
+                to {
+                    transform: rotate(360deg);
+                }
+            }
+
             .file-input{
                 display: flex;
                 flex-direction: column;
@@ -279,6 +324,11 @@
                 </td>
             </tr>
         </table>
+        <div class="spinner-container hidden" id="spinner-container" >
+            <div class="inner-container">
+                <div class="spinner"></div>
+            </div>
+        </div>
 
         <script type="module" src="/src/main.js"></script>
 
