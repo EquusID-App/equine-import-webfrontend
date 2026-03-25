@@ -57,7 +57,7 @@ validateBtn.addEventListener("click", async () => {
     const data = await res.json();
     console.log('validateBtn fetch - data: ', data);
 
-    if (data.exists.exists) {
+    if (data.exists) {
 
       emailExists = true;
       emailLabel.classList.add("has-file");
@@ -167,12 +167,32 @@ async function upload(e) {
 
     const ok = result?.success ?? 0;
     const failed = result?.failed ?? 0;
-    const total = ok + (failed || 0);
 
-    let message = `✅ ${ok} caballos importados correctamente`;
+    let message = "";
 
-    if (failed) {
-      message += `\n⚠️ ${failed} fallaron`;
+    // 🚨 CASO: usuario NO existe
+    if (validation && validation.exists === false) {
+
+      message = `⚠️ El usuario ${validation.mail} no existe en EquusID.\n`;
+      message += `📦 Los caballos fueron guardados en nuestra base interna`;
+
+      if (ok) {
+        message += `\n✅ ${ok} procesados correctamente`;
+      }
+
+      if (failed) {
+        message += `\n❌ ${failed} fallaron`;
+      }
+
+    // ✅ CASO: usuario existe (flujo normal)
+    } else {
+
+      message = `✅ ${ok} caballos importados correctamente`;
+
+      if (failed) {
+        message += `\n⚠️ ${failed} fallaron`;
+      }
+
     }
 
     output.textContent = message;
