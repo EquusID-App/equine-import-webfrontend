@@ -165,8 +165,14 @@ async function upload(e) {
       return;
     }
 
-    const ok = result?.success ?? 0;
-    const failed = result?.failed ?? 0;
+    // 🔥 NUEVO: usar stats del backend
+    const stats = result?.stats || {};
+
+    const total = stats.total ?? 0;
+    const valid = stats.valid ?? 0;
+    const invalid = stats.invalid ?? 0;
+    const duplicates = stats.duplicates_removed ?? 0;
+    const final = stats.final ?? 0;
 
     let message = "";
 
@@ -174,24 +180,45 @@ async function upload(e) {
     if (validation && validation.exists === false) {
 
       message = `⚠️ El usuario ${validation.mail} no existe en EquusID.\n`;
-      message += `📦 Los caballos fueron guardados en nuestra base interna`;
+      message += `📦 Los caballos fueron guardados en nuestra base interna\n\n`;
 
-      if (ok) {
-        message += `\n✅ ${ok} procesados correctamente`;
-      }
-
-      if (failed) {
-        message += `\n❌ ${failed} fallaron`;
-      }
-
-    // ✅ CASO: usuario existe (flujo normal)
     } else {
 
-      message = `✅ ${ok} caballos importados correctamente`;
+      message = `📊 Resultado de importación:\n\n`;
 
-      if (failed) {
-        message += `\n⚠️ ${failed} fallaron`;
-      }
+    }
+
+    // 📊 SIEMPRE mostrar stats (clave UX)
+    message += `• Filas procesadas: ${total}\n`;
+    message += `• Caballos válidos: ${valid}\n`;
+    message += `• Caballos con errores: ${invalid}\n`;
+    message += `• Duplicados eliminados: ${duplicates}\n`;
+    message += `• Total final: ${final}\n`;
+
+    // 🚨 CASO CRÍTICO: todo eliminado
+    if (valid > 0 && final === 0) {
+      message += `\n⚠️ Posible problema: todos los caballos fueron detectados como duplicados`;
+    }
+
+    // 🚨 CASO: todo inválido
+    if (valid === 0) {
+      message += `\n❌ No se pudo importar ningún caballo válido`;
+    }
+
+    // 🔍 Mostrar ejemplos de errores (muy importante)
+    if (result?.errors?.length) {
+
+      message += `\n\n⚠️ Ejemplos de errores:\n`;
+
+      result.errors.slice(0, 3).forEach((err, i) => {
+
+        if (err.errors) {
+          message += `- ${err.errors.join(", ")}\n`;
+        } else if (err.reason) {
+          message += `- ${err.reason}\n`;
+        }
+
+      });
 
     }
 
@@ -204,7 +231,7 @@ async function upload(e) {
       fileLabel.classList.remove("has-file");
       emailExists = false;
       emailLabel.classList.remove("has-file");
-    }, 10000);
+    }, 20000);
 
   } catch (err) {
 
